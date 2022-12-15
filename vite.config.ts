@@ -1,6 +1,6 @@
 // @ts-check
 import { join } from 'path'
-import preactRefresh from '@prefresh/vite'
+import preact from '@preact/preset-vite'
 import type { UserConfig } from 'vite'
 
 const config: UserConfig = {
@@ -12,7 +12,7 @@ const config: UserConfig = {
     '/@/': join(__dirname, 'src'),
   },
 
-  plugins: [preactRefresh()],
+  plugins: [preact()],
 }
 
 export default config

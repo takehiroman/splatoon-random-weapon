@@ -8,6 +8,7 @@ export default defineConfig({
   resolve: {
     alias: {
       '@/': join(__dirname, 'src/'),
+      '/@/': join(__dirname, 'src'),
       components: join(__dirname, 'src/components'),
       pages: join(__dirname, 'src/pages'),
       utils: join(__dirname, 'src/utils'),

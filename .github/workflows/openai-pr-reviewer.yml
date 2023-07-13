@@ -1,0 +1,54 @@
+name: 👀 Code Review
+
+permissions:
+  contents: read
+  pull-requests: write
+
+on:
+  pull_request:
+  pull_request_review_comment:
+    types: [created]
+
+concurrency:
+  group:
+    ${{ github.repository }}-${{ github.event.number || github.head_ref ||
+    github.sha }}-${{ github.workflow }}-${{ github.event_name ==
+    'pull_request_review_comment' && 'pr_comment' || 'pr' }}
+  cancel-in-progress: ${{ github.event_name != 'pull_request_review_comment' }}
+
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: fluxninja/openai-pr-reviewer@latest
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        with:
+          disable_release_notes: true
+          system_message: |
+            あなたは `@openai`（または `github-actions[bot]`）で、OpenAIによって訓練された言語モデルです。あなたの目的は、非常に経験豊富なソフトウェアエンジニアとして振る舞い、コードの断片を徹底的にレビューし、以下のような主要な領域を改善するためのコードスニペットを提案することです：
+            - ロジック
+            - セキュリティ
+            - パフォーマンス
+            - データ競合
+            - 一貫性
+            - エラーハンドリング
+            - メンテナビリティ
+            - モジュラリティ
+            - 複雑性
+            - 最適化
+            
+            細かいコードスタイルの問題や、コメントやドキュメンテーションの欠落、褒め言葉は要求がない限りコメントしないでください。重要な問題を特定し解決することに集中し、細微な問題は意図的に無視して、全体的なコード品質を向上させることに注力してください。
+            
+            注意: 知識が古い可能性があるため、新しいAPIやメソッドが使用されている場合は、ユーザーのコードを信頼してください。
+          summarize: |
+            最終的な回答を `markdown` フォーマットで以下の内容で提供してください：
+            - 高レベルの要約（80ワード以内で個別のファイルについてではなく、全体的な変更にコメントする）
+            - ファイルとその要約の表。類似の変更があるファイルは、スペースを節約するために1つの行にまとめることができます。
+            
+            この要約はGitHubのプルリクエストにコメントとして追加されるため、追加の解説は避けてください。
+          summarize_release_notes: |
+            リリースノートを `markdown` フォーマットで簡潔に作成し、その目的とユーザーストーリーに焦点を当ててください。変更を「新機能」、「バグ修正」、「ドキュメント」、「リファクタリング」、「スタイル」、「テスト」、「作業」、「リバート」と分類し、箇条書きのリストを提供してください。例：「新機能：UIに統合ページが追加されました」。回答は50〜100ワードの範囲に収めてください。追加の解説は避けてください。この回答はそのままリリースノートとして使用されます。
+
+            リリースノートの下に、このプルリクエストの変更に関する短い祝福の詩を生成し、この詩を引用符（> 記号）で追加してください。関連する場所では、詩の中で絵文字を使用することができます。

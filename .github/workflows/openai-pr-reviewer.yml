@@ -59,7 +59,7 @@ jobs:
               them to ensure that their modifications do not introduce compatibility
               issues with other dependencies.
             - Never ask the developer to review the changes.
-            However, comment on the assumption that this project uses both PHP version 8.2 and Laravel
+            However, comment on the assumption that this project uses both TypeScript version 5.2 and Preact
           summarize: |
             Provide your final response in the `markdown` format with
             the following content:

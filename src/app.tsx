@@ -4,16 +4,26 @@ import { CardList } from './components/CardList'
 export function App() {
   const cards = [
     {
-      title: 'Preact',
-      description: 'Fast 3kB alternative to React with the same modern API.',
+      title: '結果１',
+      weaponList: ['52ガロン', 'N-ZAP85', 'スプラローラー', 'スプラシューター'],
     },
     {
-      title: 'Vite',
-      description: 'Native-ESM powered frontend dev server.',
+      title: '結果２',
+      weaponList: [
+        'スプラチャージャー',
+        'スプラスコープ',
+        'スプラマニューバー',
+        'スプラマニューバーコラボ',
+      ],
     },
     {
-      title: 'TypeScript',
-      description: 'Typed JavaScript at Any Scale.',
+      title: '結果３',
+      weaponList: [
+        'スプラスピナー',
+        'スプラスピナーコラボ',
+        'スプラシューターコラボ',
+        'スプラローラー',
+      ],
     },
   ]
   const handleClick = () => {
@@ -23,7 +33,7 @@ export function App() {
     <>
       <CardList cards={cards} />
       <div class="flex m-4 justify-center">
-        <Button text="Click me!" onClick={handleClick} />
+        <Button text="スタート" onClick={handleClick} />
       </div>
     </>
   )

@@ -2,16 +2,20 @@ import { h, FunctionComponent } from 'preact'
 
 type CardProps = {
   title: string
-  description: string
+  weaponList: Array<string>
 }
 
-export const Card: FunctionComponent<CardProps> = ({ title, description }) => {
+export const Card: FunctionComponent<CardProps> = ({ title, weaponList }) => {
   return (
     <div class="bg-white shadow-lg rounded-lg overflow-hidden">
       <div class="bg-gray-200 text-gray-600 text-lg font-bold p-2">{title}</div>
-      <div class="p-2">
-        <p class="text-gray-600">{description}</p>
-      </div>
+      <ul class="text-gray-600">
+        {weaponList.map((weapon, index) => (
+          <li key={index} class="border-b border-gray-200 p-2">
+            {weapon}
+          </li>
+        ))}
+      </ul>
     </div>
   )
 }

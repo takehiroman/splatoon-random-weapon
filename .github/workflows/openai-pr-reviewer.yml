@@ -17,6 +17,7 @@ concurrency:
 
 jobs:
   review:
+    if: github.event.label.name == 'in review'
     runs-on: ubuntu-latest
     steps:
       - uses: fluxninja/openai-pr-reviewer@latest

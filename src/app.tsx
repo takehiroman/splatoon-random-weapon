@@ -1,7 +1,13 @@
 import { h, Fragment } from 'preact'
-import { Button } from './components/Button'
-import { CardList } from './components/CardList'
+import { Button } from '@/components/Button'
+import { Card } from '@/components/Card'
+import { CardList } from '@/components/CardList'
+import { SelectBox } from '@/components/SelectBox'
+import { useState } from 'preact/hooks'
+import { WEAPON_LIST } from './constants/weapon'
 export function App() {
+  const [weaponList, setWeaponList] = useState<string[]>([])
+  const [person, setPerson] = useState(1)
   const cards = [
     {
       title: '結果１',
@@ -26,15 +32,43 @@ export function App() {
       ],
     },
   ]
-  const handleClick = () => {
-    alert('Hello!')
+
+  const optionList = [
+    { label: '1人', value: 1 },
+    { label: '2人', value: 2 },
+    { label: '3人', value: 3 },
+    { label: '4人', value: 4 },
+  ]
+  // optionListで選択した人数分の武器をランダムで取得してて、それをweaponListに入れる
+  const handleClick = (person: number) => {
+    const randomWeaponList = []
+    for (let i = 0; i < person; i++) {
+      const randomIndex = Math.floor(Math.random() * WEAPON_LIST.length)
+      randomWeaponList.push(WEAPON_LIST[randomIndex].name)
+    }
+    setWeaponList(randomWeaponList)
+    console.log(weaponList)
+  }
+  // 人数を選択するセレクトボックス
+  const setOnChangePerson = (e: any) => {
+    setPerson(e.target.value)
   }
   return (
     <>
-      <CardList cards={cards} />
-      <div class="flex m-4 justify-center">
-        <Button text="スタート" onClick={handleClick} />
+      <div class="flex m-6 justify-center">
+        <SelectBox
+          title="人数"
+          optionList={optionList}
+          onChange={(e) => setOnChangePerson(e)}
+        />
       </div>
+      <div class="flex justify-center">
+        <Card title="結果" weaponList={weaponList} />
+      </div>
+      <div class="flex m-4 justify-center">
+        <Button text="スタート" onClick={() => handleClick(person)} />
+      </div>
+      <CardList cards={cards} />
     </>
   )
 }

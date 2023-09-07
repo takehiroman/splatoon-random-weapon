@@ -7,7 +7,7 @@ import { useState } from 'preact/hooks'
 import { WEAPON_LIST } from './constants/weapon'
 export function App() {
   const [weaponList, setWeaponList] = useState<string[]>([])
-  const [person, setPerson] = useState(1)
+  const [person, setPerson] = useState('1')
   const cards = [
     {
       title: '結果１',
@@ -34,24 +34,23 @@ export function App() {
   ]
 
   const optionList = [
-    { label: '1人', value: 1 },
-    { label: '2人', value: 2 },
-    { label: '3人', value: 3 },
-    { label: '4人', value: 4 },
+    { label: '1人', value: '1' },
+    { label: '2人', value: '2' },
+    { label: '3人', value: '3' },
+    { label: '4人', value: '4' },
   ]
   // optionListで選択した人数分の武器をランダムで取得してて、それをweaponListに入れる
-  const handleClick = (person: number) => {
+  const handleClick = (person: string) => {
     const randomWeaponList = []
-    for (let i = 0; i < person; i++) {
+    for (let i = 0; i < Number(person); i++) {
       const randomIndex = Math.floor(Math.random() * WEAPON_LIST.length)
       randomWeaponList.push(WEAPON_LIST[randomIndex].name)
     }
     setWeaponList(randomWeaponList)
-    console.log(weaponList)
   }
   // 人数を選択するセレクトボックス
-  const setOnChangePerson = (e: any) => {
-    setPerson(e.target.value)
+  const setOnChangePerson = (value: string) => {
+    setPerson(value)
   }
   return (
     <>

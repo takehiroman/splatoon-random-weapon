@@ -61,9 +61,11 @@ export function App() {
           onChange={(e) => setOnChangePerson(e)}
         />
       </div>
-      <div class="flex justify-center">
-        <Card title="結果" weaponList={weaponList} />
-      </div>
+      {weaponList.length > 0 && (
+        <div class="flex justify-center">
+          <Card title="結果" weaponList={weaponList} />
+        </div>
+      )}
       <div class="flex m-4 justify-center">
         <Button text="スタート" onClick={() => handleClick(person)} />
       </div>

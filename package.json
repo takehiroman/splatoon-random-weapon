@@ -8,7 +8,12 @@
     "lint:style": "stylelint src/**/*.{css,scss}"
   },
   "dependencies": {
-    "preact": "^10.7.1"
+    "@cloudflare/workers-types": "^4.20240129.0",
+    "@cloudflare/wrangler": "^1.21.0",
+    "hono": "^3.12.10",
+    "miniflare": "^3.20240129.0",
+    "preact": "^10.7.1",
+    "wrangler": "^3.26.0"
   },
   "devDependencies": {
     "@preact/preset-vite": "^2.0.0",

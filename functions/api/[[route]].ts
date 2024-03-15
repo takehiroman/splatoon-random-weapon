@@ -9,7 +9,7 @@ type Bindings = {
   DB: D1Database
 }
 
-const app = new Hono<{ Bindings: Bindings }>().basePath('/api')
+const app = new Hono<{ Bindings: Bindings }>()
 
 app.use(
   '*',
@@ -24,9 +24,10 @@ app.use(
 )
 
 // Accessing D1 is via the c.env.YOUR_BINDING property
-app.get('/weapons', async (c) => {
-  let { results } = await c.env.DB.prepare('SELECT * FROM Weapons').all()
+const route = app.get('/weapons', async (c) => {
+  let { results } = await c.env.DB.prepare('SELECT * FROM Weapons;').all()
   return c.json(results)
 })
 
 export default handle(app)
+export type AppType = typeof route

@@ -1,0 +1,4 @@
+[[d1_databases]]
+binding = "DB" # i.e. available in your Worker on env.DB
+database_name = "splatoon-weapon-db"
+database_id = "3287631a-7b4f-4f5d-a933-31ba99864905"

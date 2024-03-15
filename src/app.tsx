@@ -5,9 +5,13 @@ import { CardList } from '@/components/CardList'
 import { SelectBox } from '@/components/SelectBox'
 import { useState } from 'preact/hooks'
 import { WEAPON_LIST } from './constants/weapon'
+import useSWR from 'swr'
 export function App() {
   const [weaponList, setWeaponList] = useState<string[]>([])
   const [person, setPerson] = useState('1')
+  const { data } = useSWR('/api/weapons', (url) =>
+    fetch(url).then((res) => res.json())
+  )
   const cards = [
     {
       title: '結果１',
@@ -61,6 +65,7 @@ export function App() {
           onChange={(e) => setOnChangePerson(e)}
         />
       </div>
+      <p>json: {JSON.stringify(data)}</p>
       {weaponList.length > 0 && (
         <div class="flex justify-center">
           <Card title="結果" weaponList={weaponList} />

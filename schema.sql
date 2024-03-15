@@ -1,0 +1,3 @@
+DROP TABLE IF EXISTS Weapons;
+CREATE TABLE IF NOT EXISTS Weapons (weaponId INTEGER PRIMARY KEY, weaponName TEXT, weaponCategory TEXT, weaponSub TEXT, weaponSpecial TEXT);
+INSERT INTO Weapons (weaponId, weaponName, weaponCategory, weaponSub, weaponSpecial) VALUES (1,"スプラシューター", "シューター", "キューバンボム", "ウルトラショット"), (2, "スプラシューターコラボ", "シューター", "スプラッシュボム", "トリプルトルネード"), (3, "96ガロン", "シューター", "スプリンクラー", "キューインキ") , (4, "96ガロンデコ", "シューター", "スプラッシュシールド", "テイオウイカ") , (5, "ジェットスイーパー", "シューター", "ラインマーカー", "キューインキ") , (6, "ジェットスイーパーカスタム", "シューター", "ポイズンミスト", "アメフラシ") , (7, "L3リールガン", "シューター", "カーリングボム", "カニタンク") , (9, "H3リールガン", "シューター", "ポイントセンサー", "エナジースタンド") , (10, "H3リールガンD", "シューター", "スプラッシュシールド", "グレートバリア");

@@ -20,7 +20,7 @@ export const SelectBox: FunctionComponent<SelectBoxProps> = ({
         {title}
       </label>
       <select
-        class="mt-1 block w-full rounded-md bg-gray-100 border-transparent focus:border-gray-500 focus:bg-white focus:ring-0"
+        class="w-32 bg-white border border-gray-400 hover:border-gray-500 px-4 py-2 pr-8 rounded shadow leading-tight focus:outline-none focus:shadow-outline"
         id="select-box"
         name="select-box"
         onChange={(e) => onSelectChange(e)}

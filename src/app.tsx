@@ -5,13 +5,21 @@ import { CardList } from '@/components/CardList'
 import { SelectBox } from '@/components/SelectBox'
 import { useState } from 'preact/hooks'
 import { WEAPON_LIST } from './constants/weapon'
+import { hc } from 'hono/client'
+import { AppType } from '../functions/api/[[route]]'
 import useSWR from 'swr'
 export function App() {
+  const client = hc<AppType>('/api')
+  const $get = client.weapons.$get
   const [weaponList, setWeaponList] = useState<string[]>([])
   const [person, setPerson] = useState('1')
-  const { data } = useSWR('/api/weapons', (url) =>
-    fetch(url).then((res) => res.json())
-  )
+  const fetcher = (arg: any) => async () => {
+    const res = await $get(arg)
+    return await res.json()
+  }
+  const { data } = useSWR('weapons', fetcher({}), {
+    revalidateOnFocus: false,
+  })
   const cards = [
     {
       title: '結果１',

@@ -29,5 +29,5 @@ const route = app.get('/weapons', async (c) => {
   return c.json(results)
 })
 
-export default handle(app)
 export type AppType = typeof route
+export const onRequest = handle(app)

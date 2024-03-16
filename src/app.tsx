@@ -4,9 +4,8 @@ import { Card } from '@/components/Card'
 import { CardList } from '@/components/CardList'
 import { SelectBox } from '@/components/SelectBox'
 import { useState } from 'preact/hooks'
-import { WEAPON_LIST } from './constants/weapon'
 import { hc } from 'hono/client'
-import { AppType } from '../functions/api/[[route]]'
+import { AppType, Weapon } from '../functions/api/[[route]]'
 import useSWR from 'swr'
 export function App() {
   const client = hc<AppType>('/')
@@ -61,11 +60,9 @@ export function App() {
   const handleClick = async (person: string) => {
     const randomResponse = await $random(person)
     console.log(randomResponse)
-    const randomWeaponList = []
-    for (let i = 0; i < Number(person); i++) {
-      const randomIndex = Math.floor(Math.random() * WEAPON_LIST.length)
-      randomWeaponList.push(WEAPON_LIST[randomIndex].name)
-    }
+    const randomWeaponList: string[] = (await randomResponse.json()).map(
+      (weapon: Weapon) => weapon.weaponName
+    )
     setWeaponList(randomWeaponList)
   }
   // 人数を選択するセレクトボックス

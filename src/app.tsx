@@ -10,7 +10,7 @@ import { AppType } from '../functions/api/[[route]]'
 import useSWR from 'swr'
 export function App() {
   const client = hc<AppType>('/api')
-  const $get = client.weapons.$get
+  const $get = client.api.weapons.$get
   const [weaponList, setWeaponList] = useState<string[]>([])
   const [person, setPerson] = useState('1')
   const fetcher = (arg: any) => async () => {

@@ -11,6 +11,12 @@ import useSWR from 'swr'
 export function App() {
   const client = hc<AppType>('/')
   const $get = client.api.weapons.$get
+  const $random = (count: string) =>
+    client.api.weapons.random.$get({
+      query: {
+        count,
+      },
+    })
   const [weaponList, setWeaponList] = useState<string[]>([])
   const [person, setPerson] = useState('1')
   const fetcher = (arg: any) => async () => {
@@ -52,7 +58,9 @@ export function App() {
     { label: '4人', value: '4' },
   ]
   // optionListで選択した人数分の武器をランダムで取得してて、それをweaponListに入れる
-  const handleClick = (person: string) => {
+  const handleClick = async (person: string) => {
+    const randomResponse = await $random(person)
+    console.log(randomResponse)
     const randomWeaponList = []
     for (let i = 0; i < Number(person); i++) {
       const randomIndex = Math.floor(Math.random() * WEAPON_LIST.length)

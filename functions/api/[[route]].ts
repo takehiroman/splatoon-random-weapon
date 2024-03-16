@@ -28,6 +28,14 @@ const route = app.get('/weapons', async (c) => {
   let { results } = await c.env.DB.prepare('SELECT * FROM Weapons;').all()
   return c.json(results)
 })
+// Weaponsからランダムで引数で設定された種類返すSQL
+app.get('/weapons/random', async (c) => {
+  const { count } = c.req.query()
+  let { results } = await c.env.DB.prepare(
+    `SELECT * FROM Weapons ORDER BY RANDOM() LIMIT ${count};`
+  ).all()
+  return c.json(results)
+})
 
 export type AppType = typeof route
 export const onRequest = handle(app)

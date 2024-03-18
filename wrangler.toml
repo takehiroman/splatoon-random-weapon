@@ -2,3 +2,9 @@
 binding = "DB" # i.e. available in your Worker on env.DB
 database_name = "splatoon-weapon-db"
 database_id = "3287631a-7b4f-4f5d-a933-31ba99864905"
+
+[[kv_namespaces]]
+binding = "RANDOM_WEAPONS"  # i.e. available in your Worker on env.RANDOM_WEAPONS
+id="d54d932e90b34711b452f8f36b6d7fe0"
+preview_id = "03237c73fc6649c9a29ab86e9b6e4394"
+

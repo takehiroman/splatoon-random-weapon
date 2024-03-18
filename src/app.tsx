@@ -1,28 +1,34 @@
 import { h, Fragment } from 'preact'
+import { useState } from 'preact/hooks'
+
+import { hc } from 'hono/client'
+
+import useSWR from 'swr'
+
 import { Button } from '@/components/Button'
 import { Card } from '@/components/Card'
 import { CardList } from '@/components/CardList'
 import { SelectBox } from '@/components/SelectBox'
-import { useState } from 'preact/hooks'
-import { hc } from 'hono/client'
-import { AppType, Weapon } from '../functions/api/[[route]]'
-import useSWR from 'swr'
+
+import { AppType } from '../functions/api/[[route]]'
+import { Weapon } from '../functions/api/routes/weapon'
+
 export function App() {
   const client = hc<AppType>('/')
-  const $get = client.api.weapons.$get
   const $random = (count: string) =>
     client.api.weapons.random.$get({
       query: {
         count,
       },
     })
+  const $result = client.api.results.$get
   const [weaponList, setWeaponList] = useState<string[]>([])
   const [person, setPerson] = useState('1')
   const fetcher = (arg: any) => async () => {
-    const res = await $get(arg)
+    const res = await $result(arg)
     return await res.json()
   }
-  const { data } = useSWR('weapons', fetcher({}), {
+  const { data } = useSWR('results', fetcher({}), {
     revalidateOnFocus: false,
   })
   const cards = [
@@ -59,7 +65,8 @@ export function App() {
   // optionListで選択した人数分の武器をランダムで取得してて、それをweaponListに入れる
   const handleClick = async (person: string) => {
     const randomResponse = await $random(person)
-    console.log(randomResponse)
+
+    //武器名のみの配列に変換
     const randomWeaponList: string[] = (await randomResponse.json()).map(
       (weapon: Weapon) => weapon.weaponName
     )

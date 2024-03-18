@@ -1,27 +1,13 @@
-import { D1Database } from '@cloudflare/workers-types'
 import { handle } from 'hono/cloudflare-pages'
 import { Hono } from 'hono'
 import { cors } from 'hono/cors'
 
+import weapon from './routes/weapon'
+import result from './routes/result'
+
 export const runtime = 'edge'
 
-type Bindings = {
-  DB: D1Database
-}
-
-export type Weapon = {
-  weaponId: number
-  weaponName: string
-  weaponCategory: string
-  weaponSub: string
-  weaponSpecial: string
-}
-
-export type Weapons = {
-  results: Weapon[]
-}
-
-const app = new Hono<{ Bindings: Bindings }>().basePath('/api')
+const app = new Hono().basePath('/api')
 
 app.use(
   '*',
@@ -35,19 +21,7 @@ app.use(
   })
 )
 
-// Accessing D1 is via the c.env.YOUR_BINDING property
-const route = app
-  .get('/weapons', async (c) => {
-    let { results } = await c.env.DB.prepare('SELECT * FROM Weapons;').all()
-    return c.json(results)
-  })
-  .get('/weapons/random', async (c) => {
-    const { count } = c.req.query()
-    let { results }: Weapons = await c.env.DB.prepare(
-      `SELECT * FROM Weapons ORDER BY RANDOM() LIMIT ${count};`
-    ).all()
-    return c.json(results)
-  })
+const route = app.route('/weapons', weapon).route('/results', result)
 
 export type AppType = typeof route
 export const onRequest = handle(app)

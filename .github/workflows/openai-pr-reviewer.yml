@@ -28,8 +28,8 @@ jobs:
         with:
           disable_release_notes: true
           review_comment_lgtm: false
-          openai_light_model: gpt-3.5-turbo-0613
-          openai_heavy_model: gpt-3.5-turbo-0613
+          openai_light_model: gpt-4-turbo
+          openai_heavy_model: gpt-4-turbo
           system_message: |
             You are `@openai` (aka `github-actions[bot]`), a language model
             trained by OpenAI. Your purpose is to act as a highly experienced

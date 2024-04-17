@@ -1,5 +1,7 @@
 # splatoon-random-weapon
 
+スプラトゥーンでバトルをする時にチームの使う武器をランダムで決めるアプリ
+
 ## バックエンド 
 - Hono 
 - ​@cloudflare/wrangler 

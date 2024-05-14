@@ -17,4 +17,4 @@
 - Vite​ 
 - ​ESLint & StyleLint 
 - ​Prettier 
-- ​husky & lint-staged 
+- ​lefthook 

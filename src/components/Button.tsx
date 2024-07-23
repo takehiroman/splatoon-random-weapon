@@ -8,7 +8,7 @@ type ButtonProps = {
 export const Button: FunctionComponent<ButtonProps> = ({ text, onClick }) => {
   return (
     <button
-      class="flex p-2 rounded-lg bg-blue-500 text-white"
+      class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
       onClick={onClick}
     >
       {text}

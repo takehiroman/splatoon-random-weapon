@@ -30,6 +30,8 @@ export function App() {
   }
   const { data } = useSWR('results', fetcher({}), {
     revalidateOnFocus: false,
+    revalidateOnReconnect: false,
+    revalidateOnMount: false,
   })
   const cards = [
     {

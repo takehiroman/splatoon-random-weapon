@@ -8,7 +8,7 @@ type CardProps = {
 export const Card: FunctionComponent<CardProps> = ({ title, weaponList }) => {
   return (
     <div class="bg-white shadow-lg rounded-lg overflow-hidden">
-      <div class="bg-gray-200 text-gray-600 text-lg font-bold p-2">{title}</div>
+      <div class="bg-gray-200 text-gray-700 text-lg px-6 py-4">{title}</div>
       <ul class="text-gray-600">
         {weaponList.map((weapon, index) => (
           <li key={index} class="border-b border-gray-200 p-2">

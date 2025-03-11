@@ -80,6 +80,9 @@ export function App() {
   }
   return (
     <>
+      <h1 class="text-4xl text-center m-4">
+        スプラトゥーン3 ランダムブキ編成ガチャ
+      </h1>
       <div class="flex m-6 justify-center">
         <SelectBox
           title="人数"

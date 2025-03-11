@@ -1,3 +1,4 @@
+まずレビューについては全て日本語で返答してください。以下はこのプロジェクトのコーディング規約となります
 # Preact + TypeScript + Vite 5 + Hono Style Guide
 
 ## はじめに

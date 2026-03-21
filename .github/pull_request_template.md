@@ -1,5 +1,6 @@
 .github/pull_request_template.md
-```
+
+````
 
 ```markdown
 # プルリクエストテンプレート
@@ -13,7 +14,7 @@
 - closes #
 
 ## レビュー依頼
-<!-- 
+<!--
   以下の点に特に注意してご確認をお願いします:
   - [ ] ロジックの正しさ
   - [ ] 可読性と命名
@@ -29,3 +30,4 @@
 
 ---
 *Note: We prefer Japanese comments for better team collaboration.*
+````

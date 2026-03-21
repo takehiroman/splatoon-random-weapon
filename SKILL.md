@@ -1,6 +1,6 @@
 ---
 name: splatoon-random-weapon
-description: Use this skill when working in the splatoon-random-weapon repository. It covers the Preact + Vite frontend, the Hono API running on Cloudflare Pages Functions, and the D1/KV data flow used for random weapon selection and result history.
+description: Use this skill when working in the splatoon-random-weapon repository. It covers the Preact + Vite frontend, the Hono API running on Cloudflare Pages Functions, and the D1-backed data flow used for random weapon selection and result history.
 ---
 
 # Splatoon Random Weapon
@@ -14,8 +14,8 @@ Use this skill for feature work, bug fixes, refactors, or reviews in this reposi
 - `src/components/`: presentational UI components.
 - `functions/api/[[route]].ts`: API entry point for Cloudflare Pages Functions.
 - `functions/api/routes/weapon.ts`: D1-backed weapon endpoints.
-- `functions/api/routes/result.ts`: KV-backed result endpoint.
-- `wrangler.toml`: Cloudflare bindings for D1 (`DB`) and KV (`RANDOM_WEAPONS`).
+- `functions/api/routes/result.ts`: D1-backed result endpoint with optional KV migration.
+- `wrangler.toml`: Cloudflare bindings for D1 (`DB`) and optional KV (`RANDOM_WEAPONS`).
 
 ## Architecture
 
@@ -26,7 +26,7 @@ Use this skill for feature work, bug fixes, refactors, or reviews in this reposi
   - `GET /api/results`
   - `POST /api/results`
 - Local Vite dev proxies `/api` to `http://localhost:3000`.
-- Result history is stored in Cloudflare KV under a single bounded key (`results`) rather than one key per record.
+- Result history is stored in Cloudflare D1, and the API can optionally import existing KV history on first access.
 
 ## Working rules for this repo
 
@@ -39,7 +39,7 @@ Use this skill for feature work, bug fixes, refactors, or reviews in this reposi
 - `src/constants/weapon.ts` appears to be legacy or unused. Confirm usage before editing it.
 - `tsconfig.json` includes only `src`, even though the frontend imports types from `functions/`. If type changes behave strangely, inspect this include boundary first.
 - `package.json` is configured for `husky` and `lint-staged`. Avoid assuming hooks are consistently installed.
-- Free-tier-conscious behavior matters here. Prefer bounded KV usage and avoid extra reads when the UI can update from the mutation response.
+- Free-tier-conscious behavior matters here. Prefer bounded history reads/writes and avoid extra reads when the UI can update from the mutation response.
 
 ## Safe change workflow
 

@@ -43,7 +43,6 @@ export function App() {
   const { data, error, mutate, isLoading } = useSWR('results', fetchResults, {
     revalidateOnFocus: false,
     revalidateOnReconnect: false,
-    revalidateOnMount: false, // Disable revalidation for performance reasons. Data is updated via another mechanism.
   })
 
   const optionList = [

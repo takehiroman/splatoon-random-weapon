@@ -7,6 +7,7 @@
 ## バックエンド 
 - Hono 
 - Cloudflare Workers / Wrangler CLI
+- Cloudflare D1（武器一覧と結果履歴）
 
 ## フロントエンド/UI 
 - ​Preact​ 

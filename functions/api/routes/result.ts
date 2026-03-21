@@ -93,26 +93,19 @@ const parseResultHistoryRow = (row: ResultHistoryRow): ResultHistoryItem | null 
 }
 
 const ensureResultHistoryTable = async (db: D1Database) => {
-  await db.exec(
-    `CREATE TABLE IF NOT EXISTS ${RESULT_HISTORY_TABLE} (
-      id TEXT PRIMARY KEY,
-      title TEXT NOT NULL,
-      weaponList TEXT NOT NULL,
-      createdAt TEXT NOT NULL
-    );`
-  )
+  await db
+    .prepare(
+      `CREATE TABLE IF NOT EXISTS ${RESULT_HISTORY_TABLE} (id TEXT PRIMARY KEY, title TEXT NOT NULL, weaponList TEXT NOT NULL, createdAt TEXT NOT NULL);`
+    )
+    .run()
 }
 
 const pruneResultHistory = async (db: D1Database) => {
-  await db.exec(
-    `DELETE FROM ${RESULT_HISTORY_TABLE}
-     WHERE id NOT IN (
-       SELECT id
-       FROM ${RESULT_HISTORY_TABLE}
-       ORDER BY createdAt DESC, id DESC
-       LIMIT ${MAX_HISTORY_ITEMS}
-     );`
-  )
+  await db
+    .prepare(
+      `DELETE FROM ${RESULT_HISTORY_TABLE} WHERE id NOT IN (SELECT id FROM ${RESULT_HISTORY_TABLE} ORDER BY createdAt DESC, id DESC LIMIT ${MAX_HISTORY_ITEMS});`
+    )
+    .run()
 }
 
 const seedResultHistoryFromKv = async (env: Bindings) => {

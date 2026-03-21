@@ -6,7 +6,7 @@
 
 ## バックエンド 
 - Hono 
-- ​@cloudflare/wrangler 
+- Cloudflare Workers / Wrangler CLI
 
 ## フロントエンド/UI 
 - ​Preact​ 
@@ -17,4 +17,5 @@
 - Vite​ 
 - ​ESLint & StyleLint 
 - ​Prettier 
-- ​lefthook 
+- ​Husky
+- lint-staged

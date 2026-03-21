@@ -84,7 +84,9 @@ export function App() {
         | ApiError
 
       if (!Array.isArray(randomResponseJson)) {
-        throw new Error(randomResponseJson.message ?? '武器の抽選に失敗しました')
+        throw new Error(
+          randomResponseJson.message ?? '武器の抽選に失敗しました'
+        )
       }
 
       const randomWeaponList: string[] = randomResponseJson.map(
@@ -148,7 +150,9 @@ export function App() {
               </div>
             </div>
             {errorMessage && (
-              <p class="mt-4 text-center text-sm text-red-500">{errorMessage}</p>
+              <p class="mt-4 text-center text-sm text-red-500">
+                {errorMessage}
+              </p>
             )}
           </div>
 
@@ -164,7 +168,9 @@ export function App() {
               {isLoading && <p class="text-sm text-slate-500">読み込み中...</p>}
             </div>
             {error && (
-              <p class="mb-4 text-sm text-red-500">履歴を取得できませんでした。</p>
+              <p class="mb-4 text-sm text-red-500">
+                履歴を取得できませんでした。
+              </p>
             )}
             {!isLoading && !error && historyCards.length === 0 && (
               <div class="rounded-xl bg-white p-6 text-center text-slate-500 shadow-md">

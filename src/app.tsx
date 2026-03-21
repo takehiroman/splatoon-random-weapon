@@ -14,6 +14,10 @@ import { AppType } from '../functions/api/[[route]]'
 import { ResultHistoryItem } from '../functions/api/routes/result'
 import { Weapon } from '../functions/api/routes/weapon'
 
+type ApiError = {
+  message: string
+}
+
 export function App() {
   const client = hc<AppType>('/')
   const [weaponList, setWeaponList] = useState<string[]>([])
@@ -33,7 +37,8 @@ export function App() {
       throw new Error('履歴の取得に失敗しました')
     }
 
-    return (await res.json()) as ResultHistoryItem[]
+    const json = await res.json()
+    return Array.isArray(json) ? (json as ResultHistoryItem[]) : []
   }
   const { data, error, mutate, isLoading } = useSWR('results', fetchResults, {
     revalidateOnFocus: false,
@@ -56,8 +61,11 @@ export function App() {
     })
 
     if (!res.ok) {
-      throw new Error('結果の保存に失敗しました')
+      const errorResponse = (await res.json()) as ApiError
+      throw new Error(errorResponse.message ?? '結果の保存に失敗しました')
     }
+
+    return (await res.json()) as ResultHistoryItem
   }
 
   const handleClick = async (person: string) => {
@@ -71,13 +79,24 @@ export function App() {
         throw new Error('武器の抽選に失敗しました')
       }
 
-      const randomWeaponList: string[] = (await randomResponse.json()).map(
+      const randomResponseJson = (await randomResponse.json()) as
+        | Weapon[]
+        | ApiError
+
+      if (!Array.isArray(randomResponseJson)) {
+        throw new Error(randomResponseJson.message ?? '武器の抽選に失敗しました')
+      }
+
+      const randomWeaponList: string[] = randomResponseJson.map(
         (weapon: Weapon) => weapon.weaponName
       )
 
       setWeaponList(randomWeaponList)
-      await createResult(randomWeaponList)
-      await mutate()
+      const savedResult = await createResult(randomWeaponList)
+      await mutate(
+        (currentResults = []) => [savedResult, ...currentResults].slice(0, 20),
+        false
+      )
     } catch (error) {
       setErrorMessage(
         error instanceof Error ? error.message : '処理中にエラーが発生しました'

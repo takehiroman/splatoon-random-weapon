@@ -11,50 +11,33 @@ import { CardList } from '@/components/CardList'
 import { SelectBox } from '@/components/SelectBox'
 
 import { AppType } from '../functions/api/[[route]]'
+import { ResultHistoryItem } from '../functions/api/routes/result'
 import { Weapon } from '../functions/api/routes/weapon'
 
 export function App() {
   const client = hc<AppType>('/')
-  const $random = (count: string) =>
+  const [weaponList, setWeaponList] = useState<string[]>([])
+  const [person, setPerson] = useState('1')
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [errorMessage, setErrorMessage] = useState('')
+  const $random = async (count: string) =>
     client.api.weapons.random.$get({
       query: {
         count,
       },
     })
-  const $result = client.api.results.$get
-  const [weaponList, setWeaponList] = useState<string[]>([])
-  const [person, setPerson] = useState('1')
-  const fetcher = (arg: any) => async () => {
-    const res = await $result(arg)
-    return await res.json()
+  const fetchResults = async () => {
+    const res = await client.api.results.$get()
+
+    if (!res.ok) {
+      throw new Error('履歴の取得に失敗しました')
+    }
+
+    return (await res.json()) as ResultHistoryItem[]
   }
-  const { data } = useSWR('results', fetcher({}), {
+  const { data, error, mutate, isLoading } = useSWR('results', fetchResults, {
     revalidateOnFocus: false,
   })
-  const cards = [
-    {
-      title: '結果１',
-      weaponList: ['52ガロン', 'N-ZAP85', 'スプラローラー', 'スプラシューター'],
-    },
-    {
-      title: '結果２',
-      weaponList: [
-        'スプラチャージャー',
-        'スプラスコープ',
-        'スプラマニューバー',
-        'スプラマニューバーコラボ',
-      ],
-    },
-    {
-      title: '結果３',
-      weaponList: [
-        'スプラスピナー',
-        'スプラスピナーコラボ',
-        'スプラシューターコラボ',
-        'スプラローラー',
-      ],
-    },
-  ]
 
   const optionList = [
     { label: '1人', value: '1' },
@@ -62,39 +45,115 @@ export function App() {
     { label: '3人', value: '3' },
     { label: '4人', value: '4' },
   ]
-  // optionListで選択した人数分の武器をランダムで取得してて、それをweaponListに入れる
-  const handleClick = async (person: string) => {
-    const randomResponse = await $random(person)
 
-    //武器名のみの配列に変換
-    const randomWeaponList: string[] = (await randomResponse.json()).map(
-      (weapon: Weapon) => weapon.weaponName
-    )
-    setWeaponList(randomWeaponList)
+  const createResult = async (nextWeaponList: string[]) => {
+    const res = await client.api.results.$post({
+      json: {
+        weaponList: nextWeaponList,
+      },
+    })
+
+    if (!res.ok) {
+      throw new Error('結果の保存に失敗しました')
+    }
   }
-  // 人数を選択するセレクトボックス
+
+  const handleClick = async (person: string) => {
+    setIsSubmitting(true)
+    setErrorMessage('')
+
+    try {
+      const randomResponse = await $random(person)
+
+      if (!randomResponse.ok) {
+        throw new Error('武器の抽選に失敗しました')
+      }
+
+      const randomWeaponList: string[] = (await randomResponse.json()).map(
+        (weapon: Weapon) => weapon.weaponName
+      )
+
+      setWeaponList(randomWeaponList)
+      await createResult(randomWeaponList)
+      await mutate()
+    } catch (error) {
+      setErrorMessage(
+        error instanceof Error ? error.message : '処理中にエラーが発生しました'
+      )
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
+
   const setOnChangePerson = (value: string) => {
     setPerson(value)
   }
+
+  const historyCards =
+    data?.map((item) => ({
+      id: item.id,
+      title: item.title,
+      subtitle: new Date(item.createdAt).toLocaleString('ja-JP'),
+      weaponList: item.weaponList,
+    })) ?? []
+
   return (
     <>
-      <div class="flex m-6 justify-center">
-        <SelectBox
-          title="人数"
-          optionList={optionList}
-          onChange={(e) => setOnChangePerson(e)}
-        />
-      </div>
-      <p>json: {JSON.stringify(data)}</p>
-      {weaponList.length > 0 && (
-        <div class="flex justify-center">
-          <Card title="結果" weaponList={weaponList} />
+      <div class="min-h-screen bg-slate-100">
+        <div class="mx-auto max-w-5xl px-4 py-8">
+          <div class="mb-8 text-center">
+            <h1 class="text-3xl font-bold text-slate-800">
+              Splatoon Random Weapon
+            </h1>
+            <p class="mt-2 text-slate-600">
+              人数を選ぶと、その場のチーム武器をランダムに決定します。
+            </p>
+          </div>
+
+          <div class="mb-8 rounded-xl bg-white p-6 shadow-md">
+            <div class="flex flex-col items-center gap-4 md:flex-row md:justify-center">
+              <SelectBox
+                title="人数"
+                optionList={optionList}
+                onChange={(e) => setOnChangePerson(e)}
+                value={person}
+              />
+              <div class="pt-5">
+                <Button
+                  text={isSubmitting ? '抽選中...' : 'スタート'}
+                  onClick={() => handleClick(person)}
+                  disabled={isSubmitting}
+                />
+              </div>
+            </div>
+            {errorMessage && (
+              <p class="mt-4 text-center text-sm text-red-500">{errorMessage}</p>
+            )}
+          </div>
+
+          {weaponList.length > 0 && (
+            <div class="mb-8 flex justify-center">
+              <Card title="今回の結果" weaponList={weaponList} />
+            </div>
+          )}
+
+          <section>
+            <div class="mb-4 flex items-center justify-between">
+              <h2 class="text-2xl font-bold text-slate-800">履歴</h2>
+              {isLoading && <p class="text-sm text-slate-500">読み込み中...</p>}
+            </div>
+            {error && (
+              <p class="mb-4 text-sm text-red-500">履歴を取得できませんでした。</p>
+            )}
+            {!isLoading && !error && historyCards.length === 0 && (
+              <div class="rounded-xl bg-white p-6 text-center text-slate-500 shadow-md">
+                まだ履歴がありません。最初の抽選をしてみましょう。
+              </div>
+            )}
+            {historyCards.length > 0 && <CardList cards={historyCards} />}
+          </section>
         </div>
-      )}
-      <div class="flex m-4 justify-center">
-        <Button text="スタート" onClick={() => handleClick(person)} />
       </div>
-      <CardList cards={cards} />
     </>
   )
 }

@@ -3,12 +3,14 @@ type SelectBoxProps = {
   title: string
   optionList: Array<{ label: string; value: string | number }>
   onChange: (value: string) => void
+  value?: string
 }
 
 export const SelectBox: FunctionComponent<SelectBoxProps> = ({
   title,
   optionList,
   onChange,
+  value,
 }) => {
   const onSelectChange = (e: Event) => {
     const target = e.target as HTMLSelectElement
@@ -24,6 +26,7 @@ export const SelectBox: FunctionComponent<SelectBoxProps> = ({
         id="select-box"
         name="select-box"
         onChange={(e) => onSelectChange(e)}
+        value={value}
       >
         {optionList.map((option, index) => (
           <option key={index} value={option.value}>

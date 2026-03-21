@@ -36,7 +36,7 @@ Use this skill for feature work, bug fixes, refactors, or reviews in this reposi
   - Do not assume the rendered history UI is already wired to backend data.
 - `src/constants/weapon.ts` appears to be legacy or unused. Confirm usage before editing it.
 - `tsconfig.json` includes only `src`, even though the frontend imports types from `functions/`. If type changes behave strangely, inspect this include boundary first.
-- `README.md` mentions `lefthook`, while `package.json` is configured for `husky` and `lint-staged`. Avoid assuming hooks are consistently installed.
+- `package.json` is configured for `husky` and `lint-staged`. Avoid assuming hooks are consistently installed.
 
 ## Safe change workflow
 

@@ -4,6 +4,15 @@
 
 ※このリポジトリでは試験的に​Coderabbit​を活用してAIによるコードレビューを行っています。
 
+## 開発環境
+
+Node.js は `mise` で管理し、`20.x` を使用します。
+
+```bash
+mise install
+mise use
+```
+
 ## バックエンド 
 - Hono 
 - Cloudflare Workers / Wrangler CLI

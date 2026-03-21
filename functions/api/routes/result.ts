@@ -5,6 +5,9 @@ type Bindings = {
   RANDOM_WEAPONS: KVNamespace
 }
 
+const RESULT_HISTORY_KEY = 'results'
+const MAX_HISTORY_ITEMS = 20
+
 export type ResultHistoryItem = {
   id: string
   title: string
@@ -16,10 +19,16 @@ type CreateResultPayload = {
   weaponList?: string[]
 }
 
+const createResultId = () =>
+  `result-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`
+
 const result = new Hono<{ Bindings: Bindings }>()
   .get('/', async (c) => {
     const results =
-      (await c.env.RANDOM_WEAPONS.get<ResultHistoryItem[]>('results', 'json')) ??
+      (await c.env.RANDOM_WEAPONS.get<ResultHistoryItem[]>(
+        RESULT_HISTORY_KEY,
+        'json'
+      )) ??
       []
     return c.json(results)
   })
@@ -32,17 +41,22 @@ const result = new Hono<{ Bindings: Bindings }>()
     }
 
     const currentResults =
-      (await c.env.RANDOM_WEAPONS.get<ResultHistoryItem[]>('results', 'json')) ??
+      (await c.env.RANDOM_WEAPONS.get<ResultHistoryItem[]>(
+        RESULT_HISTORY_KEY,
+        'json'
+      )) ??
       []
+    const createdAt = new Date().toISOString()
     const nextResult: ResultHistoryItem = {
-      id: crypto.randomUUID(),
+      id: createResultId(),
       title: `結果 ${currentResults.length + 1}`,
       weaponList,
-      createdAt: new Date().toISOString(),
+      createdAt,
     }
-    const nextResults = [nextResult, ...currentResults].slice(0, 10)
+    // Keep a single bounded list in KV so reads/writes stay simple and within free-tier usage.
+    const nextResults = [nextResult, ...currentResults].slice(0, MAX_HISTORY_ITEMS)
 
-    await c.env.RANDOM_WEAPONS.put('results', JSON.stringify(nextResults))
+    await c.env.RANDOM_WEAPONS.put(RESULT_HISTORY_KEY, JSON.stringify(nextResults))
 
     return c.json(nextResult, 201)
   })
